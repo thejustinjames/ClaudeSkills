@@ -76,6 +76,8 @@ skills/decision-team/
 
 A packaged, installable version is included as [`decision-team.skill`](decision-team.skill).
 
+**📖 Read the full playbook:** [`skills/decision-team/README.md`](skills/decision-team/README.md) — the complete 10-step workflow, the evidence gate, role isolation, red-teaming rules, and how verdicts are constrained.
+
 ---
 
 ## 🚀 Using a skill
