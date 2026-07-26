@@ -96,6 +96,7 @@ The invariant core survives intact (evidence gate → isolated roles → red tea
 
 - 📦 [`hiring-team.skill`](hiring-team.skill) — packaged and installable
 - 🔍 [`skills/hiring-team/`](skills/hiring-team/) — unpacked, browsable
+- 📄 [**The Hiring Edge (PDF)**](docs/hiring-team-edge.pdf) — the business case: why this beats application-filtering technology, and the specific edge it gives a hiring company and a headhunter
 
 ---
 

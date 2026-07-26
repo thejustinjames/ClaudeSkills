@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Hiring Edge — Why Evidence-Gated Hiring Beats Filtering</title>
+<style>
+  :root{
+    --ink:#18202f; --slate:#4a5568; --faint:#8b95a7; --line:#dde3ec;
+    --paper:#ffffff; --wash:#f4f6fa;
+    --blue:#2f5fa8; --blue-wash:#e9f0fa;
+    --teal:#0f766e; --teal-wash:#e6f4f2;
+    --amber:#b45309; --amber-wash:#fdf3e3;
+    --red:#a83232; --red-wash:#faecec;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#e8eaee;}
+  body{font-family:"Avenir Next","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);
+       font-size:9.6pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4;margin:0;}
+  .page{width:210mm;height:297mm;background:var(--paper);padding:16mm 17mm 14mm;
+        page-break-after:always;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+  .page:last-child{page-break-after:auto;}
+  code,.mono{font-family:Menlo,"SF Mono",Consolas,monospace;font-size:8.3pt;}
+  .kicker{font-size:7.5pt;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--blue);margin-bottom:2mm;}
+  h2{font-size:19pt;font-weight:700;letter-spacing:-.015em;margin-bottom:2.5mm;}
+  h3{font-size:11pt;font-weight:600;margin:5mm 0 2mm;}
+  p.lede{font-size:10.6pt;color:var(--slate);max-width:162mm;}
+  p{color:var(--slate);}
+  .footer{position:absolute;bottom:8mm;left:17mm;right:17mm;display:flex;justify-content:space-between;
+          font-size:7pt;color:var(--faint);border-top:.4pt solid var(--line);padding-top:2mm;}
+  .callout{border-left:1.2mm solid var(--blue);background:var(--blue-wash);border-radius:0 2mm 2mm 0;
+           padding:3mm 4mm;margin-top:4mm;font-size:8.8pt;color:#2c3e5d;}
+  .callout.amber{border-color:var(--amber);background:var(--amber-wash);color:#6b430e;}
+  .callout.red{border-color:var(--red);background:var(--red-wash);color:#6e2323;}
+  .callout.teal{border-color:var(--teal);background:var(--teal-wash);color:#134e4a;}
+  .callout b{font-weight:600;}
+  .two-col{display:flex;gap:8mm;align-items:flex-start;}
+  .col{flex:1;min-width:0;}
+
+  /* cover */
+  .cover{background:linear-gradient(160deg,#141b2a 0%,#1d2942 55%,#1e3a34 100%);color:#fff;justify-content:space-between;}
+  .cover .kicker{color:#8fb0e0;}
+  .cover h1{font-size:30pt;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:3mm 0 4mm;}
+  .cover .sub{font-size:11.5pt;color:#c3cfe2;max-width:158mm;line-height:1.55;}
+  .accent-line{width:22mm;height:1.2mm;background:#2fa891;border-radius:1mm;margin-bottom:6mm;}
+  .cover-meta{display:flex;justify-content:space-between;align-items:flex-end;color:#8b99b3;font-size:8pt;}
+  .cover-meta .repo{font-family:Menlo,monospace;color:#c3cfe2;}
+  .cover-vs{display:flex;gap:6mm;margin-top:2mm;}
+  .cv-panel{flex:1;border-radius:3mm;padding:5mm;border:1px solid rgba(255,255,255,.16);}
+  .cv-panel.filter{background:rgba(168,50,50,.14);}
+  .cv-panel.find{background:rgba(47,168,145,.14);}
+  .cv-panel .lbl{font-size:7.2pt;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:2mm;}
+  .cv-panel.filter .lbl{color:#e79a9a;} .cv-panel.find .lbl{color:#7fd6c4;}
+  .cv-panel .big{font-size:12.5pt;font-weight:600;color:#fff;line-height:1.3;margin-bottom:1.5mm;}
+  .cv-panel .d{font-size:8.2pt;color:#aebbd2;line-height:1.45;}
+
+  /* stat tiles */
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3.5mm;margin-top:4mm;}
+  .stat{border:.5pt solid var(--line);border-radius:2.5mm;padding:3.5mm 4mm;background:#fff;}
+  .stat .n{font-size:17pt;font-weight:700;letter-spacing:-.02em;color:var(--red);line-height:1.1;}
+  .stat .t{font-size:7.8pt;color:var(--slate);line-height:1.4;margin-top:1mm;}
+
+  /* cascade rows */
+  .cascade{margin-top:4mm;display:flex;flex-direction:column;gap:2mm;}
+  .crow{display:flex;align-items:center;gap:3.5mm;}
+  .crow .bar{height:8.5mm;background:linear-gradient(90deg,#2f5fa8,#5b83c2);border-radius:1.6mm;
+             display:flex;align-items:center;padding:0 3.5mm;color:#fff;font-size:8pt;font-weight:600;white-space:nowrap;}
+  .crow .loss{font-size:7.6pt;color:var(--red);font-weight:600;white-space:nowrap;}
+  .crow .why{font-size:7.8pt;color:var(--slate);}
+
+  /* comparison table */
+  table.cmp{width:100%;border-collapse:collapse;margin-top:3.5mm;}
+  table.cmp th{font-size:7.4pt;text-transform:uppercase;letter-spacing:.1em;text-align:left;
+               padding:2mm 2.5mm;border-bottom:1pt solid var(--ink);color:var(--faint);}
+  table.cmp th.fcol{color:var(--red);} table.cmp th.mcol{color:var(--teal);}
+  table.cmp td{font-size:8.2pt;padding:2.2mm 2.5mm;border-bottom:.4pt solid var(--line);vertical-align:top;color:var(--slate);line-height:1.4;}
+  table.cmp td:first-child{color:var(--ink);font-weight:600;width:22%;}
+  table.cmp td.f{background:var(--red-wash);}
+  table.cmp td.m{background:var(--teal-wash);}
+
+  /* edge cards */
+  .edge{display:flex;flex-direction:column;gap:3mm;margin-top:3.5mm;}
+  .erow{display:flex;gap:3.5mm;align-items:flex-start;border:.5pt solid var(--line);border-radius:2.5mm;padding:3.2mm 4mm;background:#fff;}
+  .erow .ico{min-width:8mm;height:8mm;border-radius:2mm;display:flex;align-items:center;justify-content:center;font-size:11pt;background:var(--teal-wash);}
+  .erow h5{font-size:9.4pt;font-weight:600;margin-bottom:.6mm;}
+  .erow p{font-size:8.2pt;line-height:1.45;}
+  .erow p b{color:var(--ink);font-weight:600;}
+
+  .tag{display:inline-block;font-size:6.8pt;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+       padding:.6mm 2mm;border-radius:2mm;background:var(--teal-wash);color:var(--teal);margin-bottom:1.5mm;}
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 : COVER ============ -->
+<div class="page cover">
+  <div>
+    <div class="kicker">Claude Skills · hiring-team · The Business Case</div>
+    <div class="accent-line"></div>
+    <h1>Stop Filtering.<br>Start Finding.</h1>
+    <p class="sub">Why evidence-gated hiring beats application-filtering technology — and why the
+    edge it creates belongs to the companies and headhunters who move first, precisely because the
+    rest of the market is converging on the same tools, the same keywords, and the same average.</p>
+  </div>
+
+  <div class="cover-vs">
+    <div class="cv-panel filter">
+      <div class="lbl">The incumbent — filtering</div>
+      <div class="big">Subtractive. Starts with everyone and removes.</div>
+      <div class="d">Screens for what is legible — exact titles, keyword density, unbroken
+      employment — not for what is good. Optimises the visible cost (a wasted interview) and is
+      structurally blind to the invisible one: the exceptional candidate rejected before any human
+      ever saw them.</div>
+    </div>
+    <div class="cv-panel find">
+      <div class="lbl">This methodology — evidence-gated finding</div>
+      <div class="big">Additive. Starts with the requirement and seeks.</div>
+      <div class="d">Ranks demonstrated work above claimed credentials, refuses to conclude on thin
+      evidence, isolates its evaluators so consensus means something, red-teams its own
+      recommendation, and measures the false negative — the cost everyone else ignores.</div>
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div>
+      <div style="font-weight:600;color:#fff;font-size:9pt;">Companion to the <span class="mono" style="font-size:8.5pt;">hiring-team</span> skill</div>
+      <div>Grounded in "You Cannot Hire the Future Through a Filter Trained on the Past" · Maintained by JJ</div>
+    </div>
+    <div class="repo">github.com/thejustinjames/ClaudeSkills</div>
+  </div>
+</div>
+
+<!-- ============ PAGE 2 : WHAT THE FILTER DOES ============ -->
+<div class="page">
+  <div class="kicker">Part 1 · The Problem</div>
+  <h2>What filtering technology actually optimises</h2>
+  <p class="lede">The horror story of the rogue robot deleting brilliant CVs is fiction. The real
+  story is worse: a chain of reasonable people and reasonable tools, each making a small, sensible
+  compromise, that together produce a system tuned to reject the people you most need — not at
+  random, but <i>directionally</i>.</p>
+
+  <h3>The dilution cascade — five reasonable steps, five losses</h3>
+  <div class="cascade">
+    <div class="crow"><div class="bar" style="width:96mm;">1 · JD written from a template</div><div class="why">the differentiating requirement becomes a generic competency list</div></div>
+    <div class="crow"><div class="bar" style="width:82mm;">2 · Recruiter re-reads it through the market</div><div class="why">drifts toward the average of all roles like it</div></div>
+    <div class="crow"><div class="bar" style="width:68mm;">3 · Tools regress it to the mean</div><div class="why">trained on generic corpora, they pull everything to the centre</div></div>
+    <div class="crow"><div class="bar" style="width:54mm;">4 · Filter screens for the legible</div><div class="why loss">signal INVERTS — punishes exactly what makes a person valuable</div></div>
+    <div class="crow"><div class="bar" style="width:46mm;">5 · Hire for resemblance</div><div class="why">affinity dressed as culture fit; survivors selected for sameness</div></div>
+  </div>
+
+  <h3>The evidence that this is happening at scale</h3>
+  <div class="stats">
+    <div class="stat"><div class="n">88%</div><div class="t">of 2,250 employers surveyed (Harvard Business School / Accenture) admit qualified, high-skilled candidates are screened out for not matching the JD's language — <b>94%</b> for middle-skilled roles.</div></div>
+    <div class="stat"><div class="n">27M+</div><div class="t">"hidden workers" in the US alone — willing, able, and systematically filtered out by systems rewarding continuous employment, exact titles, and keyword density.</div></div>
+    <div class="stat"><div class="n">~90%</div><div class="t">of US employers now use AI screening (Stanford, 3.4M people tracked) — most relying on the same few vendors. An algorithmic monoculture: rejected by one, rejected by all.</div></div>
+    <div class="stat"><div class="n">1 in 10</div><div class="t">applicants sending four applications through the same screening vendor were rejected from <i>every single one</i>. Not by judgement — by correlation.</div></div>
+    <div class="stat"><div class="n">~90%</div><div class="t">of the time, humans shown biased AI recommendations mirrored them (University of Washington) — the human in the loop becomes a rubber stamp for the machine's convergence.</div></div>
+    <div class="stat"><div class="n">8%</div><div class="t">of job seekers believe AI screening makes hiring fairer. Both sides of the funnel are now miserable at once — an "AI doom loop" of machines writing to machines.</div></div>
+  </div>
+
+  <div class="callout red">
+    <b>The two asymmetries that keep it invisible.</b> The cost of a bad interview is visible and
+    immediately felt, so the pipeline minimises it ruthlessly. The cost of a false negative — the
+    elevating candidate rejected unseen — is real, often enormous, and completely unmeasured: you
+    cannot grieve a hire you never knew you missed. And hiring managers are punished for visible
+    bad hires, never for invisible missed ones — so the <i>safest</i> candidate becomes the most
+    attractive one. A filter trained on the past will always, faithfully, return more of the past.
+  </div>
+
+  <div class="footer"><span>The Hiring Edge · hiring-team</span><span>02</span></div>
+</div>
+
+<!-- ============ PAGE 3 : HEAD TO HEAD ============ -->
+<div class="page">
+  <div class="kicker">Part 2 · Head to Head</div>
+  <h2>Filtering technology vs. the evidence-gated method</h2>
+  <p class="lede">Every failure mode of the filter has a specific structural countermeasure in the
+  <span class="mono">hiring-team</span> methodology. This is not a philosophy difference — it is a
+  mechanism-by-mechanism inversion.</p>
+
+  <table class="cmp">
+    <tr><th style="width:22%;">Dimension</th><th class="fcol" style="width:38%;">Application filtering</th><th class="mcol">Evidence-gated hiring</th></tr>
+    <tr><td>Primary signal</td>
+        <td class="f">The CV — a <i>claim</i>, keyword-matched for legibility. Non-linear paths and unusual combinations parse as noise.</td>
+        <td class="m">Demonstrated work — code read, things shipped, a paid trial, watching someone reason. Claims recorded only so they can be corroborated.</td></tr>
+    <tr><td>Requirements</td>
+        <td class="f">Proxies as knockouts: years-of-experience, exact titles, credentials, "no gaps". A year short = auto-ranked down.</td>
+        <td class="m">A gates-vs-proxies audit: four kinds of genuine hard gate stated first; everything else demoted to a soft signal, never a knockout.</td></tr>
+    <tr><td>Candidate universe</td>
+        <td class="f">Whoever applied. "Best available" quietly means "best of the inbound pile" — and the genuinely excellent are usually employed, not applying.</td>
+        <td class="m">A finding plan is part of the decision. A 100%-funnel shortlist is a stated finding that invalidates the comparison set until the search runs.</td></tr>
+    <tr><td>Evaluation</td>
+        <td class="f">One shared impression, amplified: panel members contaminate each other, and "everyone loved her" feels like converging evidence.</td>
+        <td class="m">Five isolated roles with disjoint evidence slices — the Team Integrator never sees the CV; the Role Architect never sees a candidate. Agreement means something because it was not shared.</td></tr>
+    <tr><td>Its own errors</td>
+        <td class="f">False negatives unmeasured, forever. No one audits the rejected pile; the filter's mistakes are structurally invisible.</td>
+        <td class="m">A red team attacks the recommendation on resemblance, false negatives, and wrong-problem — and a standing quarterly rejected-pile audit measures what the process rejected.</td></tr>
+    <tr><td>The conclusion</td>
+        <td class="f">A ranking, delivered with confidence, resting on whatever the corpus rewarded. Verdict chosen by narrative and interview warmth.</td>
+        <td class="m">A verdict bound to an assumption ledger: hire / reshape / trial / keep-looking. An untested load-bearing assumption caps the verdict at <i>trial</i> — no exception for a strong interview.</td></tr>
+    <tr><td>Thin evidence</td>
+        <td class="f">Proceeds anyway. The ranking engine never says "I don't have enough to rank on."</td>
+        <td class="m">A hard gate refuses to run: zero demonstrated work → no hire verdict is even possible. The output becomes a work-trial design — facts first, memo later.</td></tr>
+  </table>
+
+  <div class="callout teal" style="margin-top:4mm;">
+    <b>The encouraging counter-signal:</b> in one field experiment, candidates screened by an
+    AI-led <i>capability</i> interview had a <b>53%</b> success rate in subsequent human
+    interviews, against <b>29%</b> for those screened the traditional CV way. Same technology,
+    opposite intent — used to <i>find</i> capability rather than <i>filter</i> credentials, it
+    widens the aperture instead of narrowing it. This methodology is that intent, made systematic.
+  </div>
+
+  <div class="footer"><span>The Hiring Edge · hiring-team</span><span>03</span></div>
+</div>
+
+<!-- ============ PAGE 4 : THE COMPANY'S EDGE ============ -->
+<div class="page">
+  <div class="kicker">Part 3 · The Hiring Company's Edge</div>
+  <h2>Why this is an advantage, not just a method</h2>
+  <p class="lede">An edge exists where you can systematically access value your competitors cannot
+  see. The filter's blind spots are enormous, shared across the whole market, and getting more
+  uniform as everyone adopts the same vendors — which makes seeing differently the cheapest
+  advantage available in talent.</p>
+
+  <div class="edge">
+    <div class="erow"><div class="ico">💎</div><div>
+      <h5>You recruit from a pool your competitors have agreed not to see</h5>
+      <p>The monoculture rejects the same people everywhere — career changers, returners,
+      the self-taught, the non-linear. Millions of capable people, pre-filtered out of every
+      rival's pipeline by the same handful of vendors. A process that reads <b>demonstrated work</b>
+      instead of keyword-matching claims is, functionally, exclusive access to that pool — at
+      below-market competition, because nobody else is bidding.</p></div></div>
+    <div class="erow"><div class="ico">🎯</div><div>
+      <h5>Fewer regretted hires — because "hire" has to be earned</h5>
+      <p>The costliest hiring outcome is not the wasted interview; it is the confident wrong hire.
+      Here, an untested load-bearing assumption <b>caps the verdict at trial</b> — a paid work
+      sample, structured references, pre-committed thresholds — before an offer exists. Interview
+      polish and warm consensus cannot outrank evidence, because the structure never lets them
+      compete in the same currency.</p></div></div>
+    <div class="erow"><div class="ico">🧬</div><div>
+      <h5>You hire difference on purpose — and it compounds</h5>
+      <p>The filter selects for resemblance, so incumbent teams drift toward monoculture — the
+      whole org slowly fills with people who can <i>defend the decision to hire them</i>. This
+      method's framing question — <b>"what can this person do that the last good hire could
+      not?"</b> — plus a red-team lens dedicated to resemblance, selects for capability the team
+      lacks. Each hire widens what the team can do; the compounding runs in opposite directions.</p></div></div>
+    <div class="erow"><div class="ico">📉</div><div>
+      <h5>You measure the only cost nobody else measures</h5>
+      <p>The quarterly rejected-pile audit turns the false negative from an invisible loss into a
+      managed metric. Two conversations-worth of talent found in a 20-application sample means the
+      screening criteria get re-audited before the next req opens. Competitors cannot improve a
+      number they have never once looked at.</p></div></div>
+    <div class="erow"><div class="ico">🛡️</div><div>
+      <h5>Decisions you can defend — to boards, regulators, and candidates</h5>
+      <p>Every claim traced to evidence, protected characteristics structurally excluded, a named
+      human decision-maker, an auditable memo with its evidence-quality footer intact. As
+      automated screening comes under regulatory pressure (hiring is a high-risk category under
+      the EU AI Act), an evidence-anchored human process is not just better hiring — it is a
+      smaller compliance surface.</p></div></div>
+  </div>
+
+  <div class="callout amber" style="margin-top:4mm;">
+    <b>The honest cost:</b> this is slower per candidate than a keyword filter — deliberately. It
+    scales worse, which is exactly why it works: it forces looking at people as individuals rather
+    than rows. The economics only make sense because the alternative's cheapness is an illusion —
+    the filter's speed is paid for in unmeasured false negatives and regretted hires, the two most
+    expensive line items in talent.
+  </div>
+
+  <div class="footer"><span>The Hiring Edge · hiring-team</span><span>04</span></div>
+</div>
+
+<!-- ============ PAGE 5 : THE HEADHUNTER'S EDGE ============ -->
+<div class="page">
+  <div class="kicker">Part 4 · The Headhunter's Edge</div>
+  <h2>The craft, made visible — and billable</h2>
+  <p class="lede">A genuinely good headhunter has always been the antidote to the funnel: they do
+  not filter, they hold a map — they know which signals are real, can tell a proxy from a true
+  requirement, and go and <i>find</i> the person. This methodology is that craft written down. For
+  the headhunter, that does two commercially important things: it sharpens the work, and it makes
+  the work <b>demonstrable to clients</b>.</p>
+
+  <div class="edge">
+    <div class="erow"><div class="ico">🗺️</div><div>
+      <h5>Differentiation you can show, not assert</h5>
+      <p>Every recruiter claims to "really understand the role." A headhunter running this method
+      hands the client artifacts no CV-forwarder can produce: the <b>gates-vs-proxies audit</b> of
+      the client's own JD (usually worth the fee by itself), the irreducible requirement in one
+      sentence, and a shortlist where every candidate carries demonstrated-work evidence rather
+      than keyword matches. Search over subtraction, on paper.</p></div></div>
+    <div class="erow"><div class="ico">💷</div><div>
+      <h5>The economic argument for retained work</h5>
+      <p>Contingency fees reward speed-to-fill, which trains everyone toward the template that
+      converts fastest — the average. This method is the professional instrument that justifies
+      <b>paying for understanding, not throughput</b>: the evidence file, the isolated
+      evaluations, and the decision memo are visible work product a retainer buys. It converts
+      "trust me" into "here is the analysis".</p></div></div>
+    <div class="erow"><div class="ico">🔁</div><div>
+      <h5>Fewer failed placements — the rebate killer</h5>
+      <p>A placement that fails in month four usually fails on an assumption nobody tested: "can
+      operate at this scale", "wants to build, not advise". The ledger forces those assumptions
+      into the open and attaches a <b>trial card</b> to each — a paid work sample, a structured
+      reference protocol with thresholds set before the call. Every assumption tested before
+      offer is a guarantee-period rebate that never happens.</p></div></div>
+    <div class="erow"><div class="ico">🤝</div><div>
+      <h5>Your candidate relationships survive the process</h5>
+      <p>The method's dignity rules — hard gates stated first, paid trials, evidence-grounded
+      reasons for every rejected finalist — are exactly how a headhunter protects the asset a
+      funnel burns: the long-term relationship with excellent people who said no this time. The
+      rejected finalist treated well is next year's placement, and the referrer after that.</p></div></div>
+    <div class="erow"><div class="ico">⚖️</div><div>
+      <h5>An honest broker's answer to "just send more CVs"</h5>
+      <p>When a client pushes for volume, the evidence gate is the professional's refusal made
+      legible: <b>"a shortlist now would be fiction — here are the three cheapest things to learn
+      this week."</b> The headhunter who can say that, with a structured plan attached, is
+      operating as an advisor rather than a supplier — and advisor is the seat the fees follow.</p></div></div>
+  </div>
+
+  <div class="callout" style="margin-top:4mm;">
+    <b>The same tool, pointed the right way.</b> AI used as a rejection engine reproduces the
+    past at scale. In a headhunter's hands, pointed at <i>discovery</i> — reading public work,
+    surfacing the non-obvious background that maps onto the need — it does what the funnel never
+    could. The winners of the next decade of search are the practitioners who pair deep role
+    understanding with machines aimed at finding. This skill is the operating manual for exactly
+    that pairing.
+  </div>
+
+  <div class="footer"><span>The Hiring Edge · hiring-team</span><span>05</span></div>
+</div>
+
+<!-- ============ PAGE 6 : ADOPTION ============ -->
+<div class="page">
+  <div class="kicker">Part 5 · Putting It to Work</div>
+  <h2>Adopting the method</h2>
+  <p class="lede">The methodology is packaged as a Claude skill — <span class="mono">hiring-team</span> —
+  that runs the whole harness: workspace, evidence gate, isolated role analysis, red team, ledger,
+  verdict, trial cards. Everything is open and inspectable in the repository.</p>
+
+  <div class="two-col" style="margin-top:5mm;">
+    <div class="col">
+      <h3 style="margin-top:0;">For a hiring company</h3>
+      <div class="edge">
+        <div class="erow"><div class="ico">1️⃣</div><div><h5>Start with one consequential req</h5>
+          <p>A senior or first-of-its-kind role, where the cost of a regretted hire is highest and
+          the funnel's weaknesses bite hardest.</p></div></div>
+        <div class="erow"><div class="ico">2️⃣</div><div><h5>Run the gates-vs-proxies audit on the live JD</h5>
+          <p>Twenty minutes. What it demotes from "requirement" to "signal" is usually the first
+          visible win — and the first widening of the candidate pool.</p></div></div>
+        <div class="erow"><div class="ico">3️⃣</div><div><h5>Let the gate fail honestly once</h5>
+          <p>The first run usually stops at the evidence gate. The Evidence Acquisition Plan it
+          produces — a work trial, two structured reference calls, a week of measurement — is the
+          method teaching the org what evidence looks like.</p></div></div>
+        <div class="erow"><div class="ico">4️⃣</div><div><h5>Schedule the rejected-pile audit</h5>
+          <p>Quarterly, twenty applications, read by the role-owner. The only measurement the
+          false negative will ever get.</p></div></div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 style="margin-top:0;">For a headhunter</h3>
+      <div class="edge">
+        <div class="erow"><div class="ico">1️⃣</div><div><h5>Lead with the audit as the pitch</h5>
+          <p>Run gates-vs-proxies on the prospect's live JD in the first meeting. It demonstrates
+          the craft — proxy from requirement, in front of them — before any fee discussion.</p></div></div>
+        <div class="erow"><div class="ico">2️⃣</div><div><h5>Make the evidence file the deliverable</h5>
+          <p>Shortlists arrive as evidence dossiers: demonstrated work read, references conducted
+          with the structured protocol, hesitations captured verbatim. Priced accordingly.</p></div></div>
+        <div class="erow"><div class="ico">3️⃣</div><div><h5>Attach trial cards to every offer recommendation</h5>
+          <p>Pre-committed thresholds, written before the trial runs. Every tested assumption is a
+          rebate that never happens and a reference that compounds.</p></div></div>
+        <div class="erow"><div class="ico">4️⃣</div><div><h5>Keep the verdict vocabulary</h5>
+          <p>Hire / reshape / trial / keep-looking. "Keep looking, and here is the finding plan"
+          is the sentence that turns a supplier into an advisor.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teal" style="margin-top:4.5mm;">
+    <b>The one-sentence case.</b> Every part of the standard pipeline is built from the past — the
+    JD corpus, the "successful candidate" profile, the screening rules. But the talent you now
+    need has changed shape, and the people who change companies rarely look like the people who
+    maintain them. You cannot hire the future through a filter trained on the past — so stop
+    filtering for the person you already hired, and go find the one you cannot yet imagine.
+  </div>
+
+  <div class="footer"><span>The Hiring Edge · hiring-team · github.com/thejustinjames/ClaudeSkills</span><span>06</span></div>
+</div>
+
+</body>
+</html>

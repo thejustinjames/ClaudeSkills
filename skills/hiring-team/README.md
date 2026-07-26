@@ -77,3 +77,11 @@ python scripts/evidence_lint.py --gate --evidence <workspace>/03-evidence.md --s
 If the gate fails, the deliverable is the acquisition plan — and that is the
 skill working. See [`assets/examples/worked-example.md`](assets/examples/worked-example.md)
 for a full run of each path.
+
+## The business case
+
+[**The Hiring Edge (PDF)**](../../docs/hiring-team-edge.pdf) — a 6-page illustrated
+argument for why this methodology beats application-filtering technology, with the
+evidence at scale (Hidden Workers, algorithmic monoculture, the doom loop), a
+mechanism-by-mechanism comparison, and the specific edge it creates for a hiring
+company and for a headhunter.
