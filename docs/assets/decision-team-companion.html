@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claude Skills — Decision Team Companion</title>
+<style>
+  :root{
+    --ink:#18202f;
+    --slate:#4a5568;
+    --faint:#8b95a7;
+    --line:#dde3ec;
+    --paper:#ffffff;
+    --wash:#f4f6fa;
+    --blue:#2f5fa8;
+    --blue-wash:#e9f0fa;
+    --teal:#0f766e;
+    --teal-wash:#e6f4f2;
+    --amber:#b45309;
+    --amber-wash:#fdf3e3;
+    --red:#a83232;
+    --red-wash:#faecec;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#e8eaee;}
+  body{font-family:"Avenir Next","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);
+       font-size:9.6pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4;margin:0;}
+  .page{width:210mm;height:297mm;background:var(--paper);padding:16mm 17mm 14mm;
+        page-break-after:always;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+  .page:last-child{page-break-after:auto;}
+  code,.mono{font-family:Menlo,"SF Mono",Consolas,monospace;font-size:8.3pt;}
+
+  /* ---------- shared ---------- */
+  .kicker{font-size:7.5pt;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--blue);margin-bottom:2mm;}
+  h2{font-size:19pt;font-weight:700;letter-spacing:-.015em;margin-bottom:2.5mm;}
+  h3{font-size:11pt;font-weight:600;margin:5mm 0 2mm;}
+  p.lede{font-size:10.6pt;color:var(--slate);max-width:160mm;}
+  p{color:var(--slate);}
+  .footer{position:absolute;bottom:8mm;left:17mm;right:17mm;display:flex;justify-content:space-between;
+          font-size:7pt;color:var(--faint);border-top:.4pt solid var(--line);padding-top:2mm;}
+  .rule{border:none;border-top:.5pt solid var(--line);margin:5mm 0;}
+  .tag{display:inline-block;font-size:6.8pt;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+       padding:.6mm 2mm;border-radius:2mm;}
+  .tag.blue{background:var(--blue-wash);color:var(--blue);}
+  .tag.teal{background:var(--teal-wash);color:var(--teal);}
+  .tag.amber{background:var(--amber-wash);color:var(--amber);}
+  .tag.red{background:var(--red-wash);color:var(--red);}
+
+  /* ---------- cover ---------- */
+  .cover{background:linear-gradient(160deg,#141b2a 0%,#1d2942 55%,#23345a 100%);color:#fff;justify-content:space-between;}
+  .cover .kicker{color:#8fb0e0;}
+  .cover h1{font-size:34pt;font-weight:700;letter-spacing:-.02em;line-height:1.08;margin:3mm 0 4mm;}
+  .cover .sub{font-size:12pt;color:#c3cfe2;max-width:150mm;line-height:1.55;font-weight:400;}
+  .cover-band{margin-top:10mm;}
+  .cover-pipe{display:flex;align-items:stretch;gap:0;margin-top:9mm;}
+  .cover-step{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+              border-radius:2.5mm;padding:4mm 3.5mm;margin-right:4.5mm;position:relative;}
+  .cover-step:last-child{margin-right:0;}
+  .cover-step:not(:last-child):after{content:"";position:absolute;right:-3.6mm;top:50%;margin-top:-1.4mm;
+              border-left:2.6mm solid rgba(255,255,255,.45);border-top:1.4mm solid transparent;border-bottom:1.4mm solid transparent;}
+  .cover-step .n{font-size:7pt;letter-spacing:.18em;color:#8fb0e0;font-weight:600;}
+  .cover-step .t{font-size:9.5pt;font-weight:600;margin:1mm 0 .8mm;color:#fff;}
+  .cover-step .d{font-size:7.6pt;color:#aebbd2;line-height:1.4;}
+  .cover-meta{display:flex;justify-content:space-between;align-items:flex-end;color:#8b99b3;font-size:8pt;}
+  .cover-meta .repo{font-family:Menlo,monospace;font-size:8pt;color:#c3cfe2;}
+  .cover .accent-line{width:22mm;height:1.2mm;background:#e8a33d;border-radius:1mm;margin-bottom:6mm;}
+
+  /* ---------- anatomy tree ---------- */
+  .two-col{display:flex;gap:8mm;align-items:flex-start;}
+  .col{flex:1;min-width:0;}
+  .tree{background:var(--wash);border:.5pt solid var(--line);border-radius:2.5mm;padding:4.5mm 5mm;
+        font-family:Menlo,monospace;font-size:8.2pt;line-height:1.85;color:var(--ink);}
+  .tree .dim{color:var(--faint);}
+  .tree .note{font-family:"Avenir Next",Helvetica,sans-serif;color:var(--slate);font-size:7.6pt;}
+  .tree b{font-weight:600;}
+  .callout{border-left:1.2mm solid var(--blue);background:var(--blue-wash);border-radius:0 2mm 2mm 0;
+           padding:3mm 4mm;margin-top:4mm;font-size:8.8pt;color:#2c3e5d;}
+  .callout.amber{border-color:var(--amber);background:var(--amber-wash);color:#6b430e;}
+  .callout.red{border-color:var(--red);background:var(--red-wash);color:#6e2323;}
+  .callout.teal{border-color:var(--teal);background:var(--teal-wash);color:#134e4a;}
+  .callout b{font-weight:600;}
+
+  /* ---------- property cards ---------- */
+  .cards3{display:flex;gap:4.5mm;margin-top:4mm;}
+  .pcard{flex:1;border:.5pt solid var(--line);border-radius:2.5mm;padding:4mm;background:#fff;}
+  .pcard .num{width:6.5mm;height:6.5mm;border-radius:50%;background:var(--ink);color:#fff;font-size:8.5pt;
+              font-weight:600;display:flex;align-items:center;justify-content:center;margin-bottom:2.2mm;}
+  .pcard h4{font-size:9.8pt;font-weight:600;margin-bottom:1.2mm;}
+  .pcard p{font-size:8.2pt;line-height:1.45;}
+
+  /* ---------- correlated vs isolated ---------- */
+  .vs-wrap{display:flex;gap:6mm;margin-top:4mm;align-items:stretch;}
+  .vs-panel{flex:1;border-radius:2.5mm;padding:4mm 4.5mm;border:.5pt solid var(--line);}
+  .vs-panel.bad{background:var(--red-wash);border-color:#e5c4c4;}
+  .vs-panel.good{background:var(--teal-wash);border-color:#bfe0dc;}
+  .vs-panel h4{font-size:9.8pt;font-weight:600;margin-bottom:.8mm;}
+  .vs-panel .verdict{font-size:7.4pt;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2.5mm;}
+  .bad .verdict{color:var(--red);} .good .verdict{color:var(--teal);}
+  .vs-diagram{margin:2mm 0 2.5mm;}
+  .vs-panel p{font-size:8.2pt;line-height:1.45;}
+
+  /* ---------- workflow phases ---------- */
+  .phase{margin-top:4mm;}
+  .phase-head{display:flex;align-items:center;gap:3mm;margin-bottom:2mm;}
+  .phase-head .ph-label{font-size:7.2pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+  .phase-head .ph-line{flex:1;height:.4pt;background:var(--line);}
+  .steps{display:flex;gap:3.5mm;}
+  .step{flex:1;border:.5pt solid var(--line);border-radius:2.2mm;padding:3mm 3.2mm;background:#fff;position:relative;}
+  .step .sn{font-size:6.8pt;font-weight:700;color:var(--faint);letter-spacing:.1em;}
+  .step .st{font-size:8.8pt;font-weight:600;margin:.6mm 0 .8mm;line-height:1.25;}
+  .step .sd{font-size:7.5pt;color:var(--slate);line-height:1.4;}
+  .step.gate{border:1pt solid var(--amber);background:var(--amber-wash);}
+  .step.redteam{border:1pt solid var(--red);background:var(--red-wash);}
+  .step.out{border:1pt solid var(--teal);background:var(--teal-wash);}
+
+  /* ---------- gate flowchart ---------- */
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;}
+  .fbox{border-radius:2.2mm;padding:2.6mm 5mm;font-size:8.6pt;text-align:center;border:.5pt solid var(--line);background:#fff;}
+  .fbox b{font-weight:600;}
+  .fbox.start{background:var(--wash);}
+  .fdiamond{background:var(--amber-wash);border:1pt solid var(--amber);font-weight:600;color:#6b430e;}
+  .farrow{width:0;height:5mm;border-left:.6pt solid var(--faint);position:relative;}
+  .farrow:after{content:"";position:absolute;bottom:0;left:-1.2mm;border-top:1.6mm solid var(--faint);
+                border-left:1.1mm solid transparent;border-right:1.1mm solid transparent;}
+  .fsplit{display:flex;gap:8mm;align-items:flex-start;margin-top:0;}
+  .fbranch{display:flex;flex-direction:column;align-items:center;}
+  .flabel{font-size:7pt;font-weight:700;letter-spacing:.08em;margin:1mm 0;}
+  .flabel.yes{color:var(--teal);} .flabel.no{color:var(--red);}
+  .fbox.pass{background:var(--teal-wash);border:1pt solid var(--teal);color:#134e4a;width:32mm;}
+  .fbox.fail{background:var(--red-wash);border:1pt solid var(--red);color:#6e2323;width:50mm;}
+  .fbox.fail.small{width:16mm;}
+
+  /* ---------- verdict table ---------- */
+  table.rules{width:100%;border-collapse:collapse;margin-top:3mm;}
+  table.rules th{font-size:7.4pt;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);
+                 text-align:left;padding:1.5mm 2.5mm;border-bottom:1pt solid var(--ink);}
+  table.rules td{font-size:8.6pt;padding:2.2mm 2.5mm;border-bottom:.4pt solid var(--line);vertical-align:top;color:var(--slate);}
+  table.rules td:first-child{color:var(--ink);}
+  .vchip{display:inline-block;font-weight:700;font-size:8pt;padding:.6mm 2.6mm;border-radius:2mm;}
+  .vchip.test{background:var(--amber-wash);color:var(--amber);}
+  .vchip.stop{background:var(--red-wash);color:var(--red);}
+  .vchip.proceed{background:var(--teal-wash);color:var(--teal);}
+
+  /* ---------- outputs stack ---------- */
+  .stack{display:flex;flex-direction:column;gap:2.5mm;margin-top:3mm;}
+  .srow{display:flex;gap:3.5mm;align-items:flex-start;border:.5pt solid var(--line);border-radius:2.2mm;padding:3mm 3.5mm;background:#fff;}
+  .srow .rank{min-width:7mm;height:7mm;border-radius:50%;display:flex;align-items:center;justify-content:center;
+              font-weight:700;font-size:9pt;background:var(--ink);color:#fff;}
+  .srow.first{border:1pt solid var(--teal);background:var(--teal-wash);}
+  .srow.first .rank{background:var(--teal);}
+  .srow h5{font-size:9.2pt;font-weight:600;margin-bottom:.4mm;}
+  .srow p{font-size:8pt;line-height:1.4;}
+
+  /* ---------- variants ---------- */
+  .core-ring{display:flex;gap:5mm;align-items:stretch;margin-top:3.5mm;}
+  .core-box{flex:1.1;background:var(--ink);color:#fff;border-radius:2.5mm;padding:4mm 4.5mm;}
+  .core-box h4{font-size:9.6pt;font-weight:600;margin-bottom:2mm;color:#fff;}
+  .core-box ul{list-style:none;}
+  .core-box li{font-size:8pt;color:#c3cbd9;padding:1.1mm 0;border-bottom:.4pt solid rgba(255,255,255,.12);line-height:1.35;}
+  .core-box li:last-child{border-bottom:none;}
+  .core-box li b{color:#fff;font-weight:600;}
+  .swap-box{flex:1;border:.5pt dashed var(--faint);border-radius:2.5mm;padding:4mm 4.5mm;background:var(--wash);}
+  .swap-box h4{font-size:9.6pt;font-weight:600;margin-bottom:2mm;}
+  .swap-box ul{list-style:none;}
+  .swap-box li{font-size:8pt;color:var(--slate);padding:1.1mm 0;border-bottom:.4pt solid var(--line);line-height:1.35;}
+  .swap-box li:last-child{border-bottom:none;}
+  .swap-box li b{color:var(--ink);font-weight:600;}
+
+  .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:3.5mm;margin-top:3.5mm;}
+  .vcard{border:.5pt solid var(--line);border-radius:2.5mm;padding:3.2mm 3.8mm;background:#fff;}
+  .vcard .vh{display:flex;align-items:center;gap:2mm;margin-bottom:1.4mm;}
+  .vcard .emoji{font-size:11pt;}
+  .vcard h5{font-size:9.4pt;font-weight:600;}
+  .vcard p{font-size:7.7pt;line-height:1.42;}
+  .vcard p b{color:var(--ink);font-weight:600;}
+  .vcard .gate-line{margin-top:1.4mm;font-size:7.4pt;color:var(--amber);font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 : COVER ================= -->
+<div class="page cover">
+  <div>
+    <div class="kicker">Claude Skills · Companion Guide</div>
+    <div class="accent-line"></div>
+    <h1>Decision Team</h1>
+    <p class="sub">A harness for making consequential decisions well — build vs. buy, pricing, market
+    entry, hiring, vendor selection. Six analytical roles run in isolation, every claim traces to
+    evidence, an independent red team tries to kill the recommendation, and the deliverable is a
+    list of cheap, falsifiable tests — not a persuasive memo.</p>
+
+  </div>
+
+  <div>
+    <div style="font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:#8fb0e0;font-weight:600;margin-bottom:4mm;">How a decision moves through the harness</div>
+    <div class="cover-pipe" style="margin-top:0;">
+      <div class="cover-step">
+        <div class="n">01 · GATE</div>
+        <div class="t">Evidence gate</div>
+        <div class="d">Thin inputs? Stop before analysis begins. Facts first, memo later.</div>
+      </div>
+      <div class="cover-step">
+        <div class="n">02 · ANALYSE</div>
+        <div class="t">Six isolated roles</div>
+        <div class="d">Separate agents, disjoint evidence slices, zero cross-talk.</div>
+      </div>
+      <div class="cover-step">
+        <div class="n">03 · ATTACK</div>
+        <div class="t">Red team</div>
+        <div class="d">Clean context. One job: break the recommendation.</div>
+      </div>
+      <div class="cover-step">
+        <div class="n">04 · TEST</div>
+        <div class="t">Falsifiable tests</div>
+        <div class="d">Cheap experiments that would actually change what you do.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div>
+      <div style="font-weight:600;color:#fff;font-size:9pt;">Claude Skills — templates for structured workflows</div>
+      <div>Maintained by JJ · Every skill is a template, built to be honed to your own decisions.</div>
+    </div>
+    <div class="repo">github.com/thejustinjames/ClaudeSkills</div>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 : WHAT IS A SKILL ================= -->
+<div class="page">
+  <div class="kicker">Part 1 · Foundations</div>
+  <h2>What a skill is — and how one is built</h2>
+  <p class="lede">A skill is a folder of instructions, references, templates, and scripts that Claude
+  loads on demand. Instead of re-explaining a process every session, the skill captures it once —
+  the workflow, the guardrails, the output format — and Claude follows it consistently.</p>
+
+  <div class="two-col" style="margin-top:6mm;">
+    <div class="col">
+      <h3 style="margin-top:0;">Anatomy of a skill</h3>
+      <div class="tree">
+        <b>decision-team/</b><br>
+        ├── <b>SKILL.md</b> <span class="note">← required · frontmatter + playbook</span><br>
+        ├── <span class="dim">references/</span> <span class="note">← depth, loaded per step</span><br>
+        │&nbsp;&nbsp;&nbsp;├── roles.md<br>
+        │&nbsp;&nbsp;&nbsp;├── evidence-protocol.md<br>
+        │&nbsp;&nbsp;&nbsp;├── redteam-protocol.md<br>
+        │&nbsp;&nbsp;&nbsp;└── memo-format.md<br>
+        ├── <span class="dim">assets/</span> <span class="note">← templates + worked examples</span><br>
+        │&nbsp;&nbsp;&nbsp;├── workspace/<br>
+        │&nbsp;&nbsp;&nbsp;└── examples/<br>
+        └── <span class="dim">scripts/</span> <span class="note">← deterministic checks</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── init_workspace.py<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── evidence_lint.py<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── rank_assumptions.py
+      </div>
+      <div class="callout">
+        <b>Progressive disclosure.</b> Claude reads the playbook up front and pulls reference files
+        only at the step that needs them. A skill that front-loads everything burns context on
+        material that may never be used.
+      </div>
+    </div>
+    <div class="col">
+      <h3 style="margin-top:0;">The three design rules that matter most</h3>
+
+      <div class="pcard" style="margin-bottom:3mm;">
+        <span class="tag blue">Frontmatter</span>
+        <h4 style="margin-top:1.6mm;">The description is a trigger, not a summary</h4>
+        <p>It's the only thing Claude sees before deciding to load the skill. Name the concrete
+        situations (<i>build or buy, raise prices, kill a product</i>) and the casual phrasings
+        (<i>"should we…", "I'm torn between…"</i>) that should activate it.</p>
+      </div>
+
+      <div class="pcard" style="margin-bottom:3mm;">
+        <span class="tag amber">Playbook</span>
+        <h4 style="margin-top:1.6mm;">Explain why, put gates early, name failure modes</h4>
+        <p>A model that understands the rationale applies rules correctly in situations the author
+        didn't anticipate. If there's a condition under which the run should stop, check it first —
+        and make stopping a <i>success</i> outcome.</p>
+      </div>
+
+      <div class="pcard">
+        <span class="tag teal">Scripts</span>
+        <h4 style="margin-top:1.6mm;">Script the checks a model will fudge</h4>
+        <p>Counting, thresholds, format validation, computed priority. Standard library only,
+        runnable from a fresh clone — and the script should print what it <i>cannot</i> check, so
+        those conditions get applied manually.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"><span>Claude Skills · Decision Team Companion</span><span>02</span></div>
+</div>
+
+<!-- ================= PAGE 3 : WHY ISOLATION ================= -->
+<div class="page">
+  <div class="kicker">Part 2 · The Architecture</div>
+  <h2>Why six voices aren't six perspectives</h2>
+  <p class="lede">The obvious way to do multi-role analysis is to ask one model to play six characters
+  in one conversation. That fails in a specific, invisible way — and the skill's entire structure
+  exists to prevent it.</p>
+
+  <div class="vs-wrap">
+    <div class="vs-panel bad">
+      <h4>One conversation, six characters</h4>
+      <div class="verdict">✗ Correlated errors</div>
+      <svg class="vs-diagram" viewBox="0 0 300 108" width="100%">
+        <rect x="65" y="6" width="170" height="30" rx="5" fill="#a83232" opacity="0.9"/>
+        <text x="150" y="20" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="600" font-family="Helvetica">One model</text>
+        <text x="150" y="31" text-anchor="middle" fill="#f3d2d2" font-size="7.5" font-family="Helvetica">same weights · same priors · same context</text>
+        <g stroke="#c98080" stroke-width="1.2">
+          <line x1="110" y1="36" x2="35"  y2="70"/><line x1="126" y1="36" x2="81"  y2="70"/>
+          <line x1="142" y1="36" x2="127" y2="70"/><line x1="158" y1="36" x2="173" y2="70"/>
+          <line x1="174" y1="36" x2="219" y2="70"/><line x1="190" y1="36" x2="265" y2="70"/>
+        </g>
+        <g font-family="Helvetica" font-size="7" fill="#6e2323" text-anchor="middle">
+          <rect x="12"  y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="35"  y="80">“Market”</text>
+          <rect x="58"  y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="81"  y="80">“Customer”</text>
+          <rect x="104" y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="127" y="80">“Operator”</text>
+          <rect x="150" y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="173" y="80">“Finance”</text>
+          <rect x="196" y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="219" y="80">“Historian”</text>
+          <rect x="242" y="70" width="46" height="16" rx="3" fill="#fff" stroke="#dba8a8"/><text x="265" y="80">“Lead”</text>
+        </g>
+        <text x="150" y="101" text-anchor="middle" font-family="Helvetica" font-size="7.5" fill="#a83232" font-weight="600">agreement ≠ converging evidence — it's a shared prior</text>
+      </svg>
+      <p>The errors are correlated, and synthesis cannot detect correlated error because it looks
+      exactly like agreement. Consensus that <i>feels</i> like converging evidence is precisely the
+      failure a decision process exists to prevent.</p>
+    </div>
+
+    <div class="vs-panel good">
+      <h4>Isolated agents, sliced evidence</h4>
+      <div class="verdict">✓ Independent errors</div>
+      <svg class="vs-diagram" viewBox="0 0 300 108" width="100%">
+        <g font-family="Helvetica" text-anchor="middle">
+          <g>
+            <rect x="8"   y="8" width="50" height="20" rx="4" fill="#0f766e"/><text x="33"  y="21" fill="#fff" font-size="8" font-weight="600">Market</text>
+            <rect x="66"  y="8" width="50" height="20" rx="4" fill="#0f766e"/><text x="91"  y="21" fill="#fff" font-size="8" font-weight="600">Customer</text>
+            <rect x="124" y="8" width="50" height="20" rx="4" fill="#0f766e"/><text x="149" y="21" fill="#fff" font-size="8" font-weight="600">Operator</text>
+            <rect x="182" y="8" width="50" height="20" rx="4" fill="#0f766e"/><text x="207" y="21" fill="#fff" font-size="8" font-weight="600">Finance</text>
+            <rect x="240" y="8" width="50" height="20" rx="4" fill="#0f766e"/><text x="265" y="21" fill="#fff" font-size="8" font-weight="600">Historian</text>
+          </g>
+          <g stroke="#7cb8b2" stroke-width="1.2">
+            <line x1="33"  y1="28" x2="33"  y2="44"/><line x1="91"  y1="28" x2="91"  y2="44"/>
+            <line x1="149" y1="28" x2="149" y2="44"/><line x1="207" y1="28" x2="207" y2="44"/>
+            <line x1="265" y1="28" x2="265" y2="44"/>
+          </g>
+          <g font-size="7" fill="#134e4a">
+            <rect x="10"  y="44" width="46" height="14" rx="3" fill="#fff" stroke="#9ccfc9"/><text x="33"  y="53.5">slice E1–E3</text>
+            <rect x="68"  y="44" width="46" height="14" rx="3" fill="#fff" stroke="#9ccfc9"/><text x="91"  y="53.5">slice E4–E6</text>
+            <rect x="126" y="44" width="46" height="14" rx="3" fill="#fff" stroke="#9ccfc9"/><text x="149" y="53.5">slice E7–E8</text>
+            <rect x="184" y="44" width="46" height="14" rx="3" fill="#fff" stroke="#9ccfc9"/><text x="207" y="53.5">slice E9–E11</text>
+            <rect x="242" y="44" width="46" height="14" rx="3" fill="#fff" stroke="#9ccfc9"/><text x="265" y="53.5">slice E12+</text>
+          </g>
+          <g stroke="#7cb8b2" stroke-width="1.2">
+            <line x1="33"  y1="58" x2="130" y2="76"/><line x1="91"  y1="58" x2="140" y2="76"/>
+            <line x1="149" y1="58" x2="149" y2="76"/><line x1="207" y1="58" x2="158" y2="76"/>
+            <line x1="265" y1="58" x2="168" y2="76"/>
+          </g>
+          <rect x="100" y="76" width="100" height="20" rx="4" fill="#18202f"/>
+          <text x="150" y="86" fill="#fff" font-size="8" font-weight="600">Strategy Lead</text>
+          <text x="150" y="93.5" fill="#aab4c4" font-size="6.5">synthesis · no new claims</text>
+        </g>
+      </svg>
+      <p>Each role sees only its slice, its brief, and the decision statement — never the other
+      roles' outputs. Where roles disagree, the disagreement arose from <i>different evidence</i>,
+      which makes it information rather than theatre.</p>
+    </div>
+  </div>
+
+  <div class="cards3">
+    <div class="pcard">
+      <div class="num">1</div>
+      <h4>Isolation</h4>
+      <p>Independence has to be manufactured structurally — it will not arise from prompting.
+      Disjoint evidence slices, no sight of each other's reasoning.</p>
+    </div>
+    <div class="pcard">
+      <div class="num">2</div>
+      <h4>Traceability</h4>
+      <p>Every claim carries a tag: the evidence item that supports it, or an explicit admission
+      that nothing does. The lint script makes fluent unsupported prose expensive.</p>
+    </div>
+    <div class="pcard">
+      <div class="num">3</div>
+      <h4>Refutation, not review</h4>
+      <p>The red team runs afterward, in a clean context, sees the conclusion and raw evidence but
+      never the reasoning — and is asked to break the decision, not assess it.</p>
+    </div>
+  </div>
+
+  <div class="footer"><span>Claude Skills · Decision Team Companion</span><span>03</span></div>
+</div>
+
+<!-- ================= PAGE 4 : WORKFLOW ================= -->
+<div class="page">
+  <div class="kicker">Part 3 · The Workflow</div>
+  <h2>Ten steps, four phases</h2>
+  <p class="lede">Run in order. The gate can end the run at step 2 — and when it does, that is the
+  skill working, not failing.</p>
+
+  <div class="phase">
+    <div class="phase-head"><span class="ph-label" style="color:var(--amber);">Phase A · Frame &amp; Gate</span><span class="ph-line"></span></div>
+    <div class="steps">
+      <div class="step"><div class="sn">STEP 1</div><div class="st">Build workspace, state the decision</div>
+        <div class="sd">Interview the user — never infer. The move, the alternative, the date, observable success. Gaps marked <span class="mono">[NOT SUPPLIED]</span> are the first finding.</div></div>
+      <div class="step gate"><div class="sn">STEP 2</div><div class="st">Load evidence, run the gate</div>
+        <div class="sd">&lt; 5 primary / internal-data items — or demand-hinged with zero buyer conversations — <b>stop</b>. Deliver an Evidence Acquisition Plan instead.</div></div>
+      <div class="step"><div class="sn">STEP 3</div><div class="st">Fill context, slice evidence</div>
+        <div class="sd">Map each evidence item to the roles that should see it. Each slice is a standalone file — never "the whole file, ignore parts."</div></div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="ph-label" style="color:var(--blue);">Phase B · Isolated Analysis</span><span class="ph-line"></span></div>
+    <div class="steps">
+      <div class="step"><div class="sn">STEP 4</div><div class="st">Run five roles in parallel isolation</div>
+        <div class="sd">Market Analyst · Customer Strategist · Operator · Finance Lead · Historian. Each ends with <i>"Evidence I was not given but need."</i></div></div>
+      <div class="step"><div class="sn">STEP 5</div><div class="st">Lint each deliverable against its slice</div>
+        <div class="sd">The one automated check that isolation held: a role citing evidence it was never handed gets caught. Failures go back to the role — never patched by hand.</div></div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="ph-label" style="color:var(--ink);">Phase C · Synthesis &amp; Attack</span><span class="ph-line"></span></div>
+    <div class="steps">
+      <div class="step"><div class="sn">STEP 6</div><div class="st">Map disagreement mechanically</div>
+        <div class="sd">Extract claims on the same assumption; find polarity conflicts. Total agreement is a warning, not a green light.</div></div>
+      <div class="step"><div class="sn">STEP 7</div><div class="st">Build the assumption ledger</div>
+        <div class="sd">Load-bearing? Importance × uncertainty. Flag every load-bearing assumption with no cheap test attached.</div></div>
+      <div class="step"><div class="sn">STEP 8</div><div class="st">Draft memo…</div>
+        <div class="sd">Tagged synthesis linted at the 0.20 ceiling; the memo rendered from it in readable prose.</div></div>
+      <div class="step redteam"><div class="sn">STEP 8b</div><div class="st">…then red-team it</div>
+        <div class="sd">Three refuters, distinct lenses, clean context. A refutation only counts if it names a ~30-day observable.</div></div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="ph-label" style="color:var(--teal);">Phase D · Verdict &amp; Tests</span><span class="ph-line"></span></div>
+    <div class="steps">
+      <div class="step"><div class="sn">STEP 9</div><div class="st">Set the verdict — constrained, not chosen</div>
+        <div class="sd">Proceed / modify / test / stop, bound to the ledger. No exception for a strong narrative.</div></div>
+      <div class="step out"><div class="sn">STEP 10</div><div class="st">Write the test cards</div>
+        <div class="sd">Metric, cost, sample — and pass / fail / modify thresholds committed <b>before</b> the test runs, timestamped.</div></div>
+    </div>
+  </div>
+
+  <div class="callout amber" style="margin-top:4.5mm;">
+    <b>The most-skipped, most-valuable part:</b> the evidence gate. Running six roles on thin inputs
+    produces a beautifully formatted hallucination with a financial model attached — more dangerous
+    than no analysis, because it feels like diligence. A user who came for a strategy memo and left
+    with three phone calls to make got the better deal.
+  </div>
+
+  <div class="footer"><span>Claude Skills · Decision Team Companion</span><span>04</span></div>
+</div>
+
+<!-- ================= PAGE 5 : GATE + VERDICT ================= -->
+<div class="page">
+  <div class="kicker">Part 4 · The Two Hard Rules</div>
+  <h2>The gate decides if analysis runs.<br>The ledger decides what it may conclude.</h2>
+
+  <div class="two-col" style="margin-top:5mm;">
+    <div class="col">
+      <h3 style="margin-top:0;">The evidence gate</h3>
+      <div class="flow">
+        <div class="fbox start">Evidence loaded into <span class="mono">03-evidence.md</span><br>
+          <span style="font-size:7.4pt;color:var(--faint);">one block per item · E&lt;n&gt; id · source · type</span></div>
+        <div class="farrow"></div>
+        <div class="fbox fdiamond">≥ 5 items that are <b>primary</b> or <b>internal-data</b>,<br>from independent sources?</div>
+        <div class="fsplit">
+          <div class="fbranch">
+            <div class="flabel yes">YES ↓</div>
+            <div class="fbox fdiamond" style="font-size:8pt;">Decision hinges on demand<br>with <b>zero</b> buyer conversations?</div>
+            <div class="fsplit" style="gap:5mm;">
+              <div class="fbranch">
+                <div class="flabel yes" style="color:var(--red);">YES ↓</div>
+                <div class="fbox fail small" style="font-size:7.8pt;">Stop</div>
+              </div>
+              <div class="fbranch">
+                <div class="flabel yes">NO ↓</div>
+                <div class="fbox pass"><b>Gate passes</b><br><span style="font-size:7.4pt;">proceed to slicing &amp; roles</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="fbranch">
+            <div class="flabel no">NO ↓</div>
+            <div class="fbox fail"><b>Stop. No memo.</b><br>
+              <span style="font-size:7.4pt;">Deliver an <b>Evidence Acquisition Plan</b>:<br>
+              the 3 cheapest things to find out this week,<br>
+              what each settles, and what you'd do<br>differently depending on the result.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:4mm;">
+        <b>Primary</b> = you or the user talked to a real buyer, ran the test, shipped the thing.
+        <b>Internal-data</b> = your own numbers, exported — not remembered. Web research is
+        secondary and carries a URL. Nothing is ever written from the model's priors.
+      </div>
+    </div>
+
+    <div class="col">
+      <h3 style="margin-top:0;">Verdict constraints</h3>
+      <p style="font-size:8.8pt;">The verdict is one of <b>proceed / modify / test / stop</b> — and
+      it is constrained rather than chosen freely, because the pull toward an agreeable, confident
+      "proceed" is strong and does not announce itself.</p>
+      <table class="rules">
+        <tr><th style="width:62%;">Condition in the ledger</th><th>Forced verdict</th></tr>
+        <tr><td>Load-bearing assumption, priority ≥ 16, no completed test</td>
+            <td><span class="vchip test">TEST</span></td></tr>
+        <tr><td>≥ 2 surviving red-team refutations on one load-bearing assumption</td>
+            <td><span class="vchip test">TEST</span> / <span class="vchip stop">STOP</span></td></tr>
+        <tr><td>Evidence gate passed only marginally</td>
+            <td><span class="vchip test">TEST</span> — and say so</td></tr>
+        <tr><td>No forcing condition triggered</td>
+            <td><span class="vchip proceed">PROCEED</span> is allowed</td></tr>
+      </table>
+      <div class="callout red" style="margin-top:4mm;">
+        <b>Either/or decisions get two verdicts.</b> "A: test. B: proceed." is a real answer;
+        collapsing it into a single token is not. If the framing itself is broken — both options
+        fail, or they aren't actually exclusive — say that first.
+      </div>
+
+      <h3>What gets delivered, in order of prominence</h3>
+      <div class="stack">
+        <div class="srow first"><div class="rank">1</div>
+          <div><h5>The test list</h5><p>Three to five cards, cheapest first, thresholds pre-committed. The primary deliverable.</p></div></div>
+        <div class="srow"><div class="rank">2</div>
+          <div><h5>The decision memo</h5><p>One page, evidence-quality footer intact — the reader's only way to calibrate what they're holding.</p></div></div>
+        <div class="srow"><div class="rank">3</div>
+          <div><h5>The assumption ledger</h5><p>Sorted by importance × uncertainty; untested load-bearing items flagged.</p></div></div>
+        <div class="srow"><div class="rank">4</div>
+          <div><h5>Open disagreements &amp; surviving refutations</h5><p>Unresolved, as they are. Writing smoothly over a real disagreement is the most expensive thing this process can do.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"><span>Claude Skills · Decision Team Companion</span><span>05</span></div>
+</div>
+
+<!-- ================= PAGE 6 : VARIANTS ================= -->
+<div class="page">
+  <div class="kicker">Part 5 · Beyond Build vs. Buy</div>
+  <h2>Adapting the template to other decisions</h2>
+  <p class="lede">Nothing about the harness is specific to build-vs-buy. Keep the invariant core,
+  swap the variant surface, and the same structure handles any consequential, hard-to-reverse call
+  made under uncertainty.</p>
+
+  <div class="core-ring">
+    <div class="core-box">
+      <h4>Keep — the invariant core</h4>
+      <ul>
+        <li><b>Evidence gate</b> — no analysis on thin inputs, ever</li>
+        <li><b>Isolated roles</b> — independence is structural, not prompted</li>
+        <li><b>Claim traceability</b> — every claim tagged or admitted</li>
+        <li><b>Refutation after synthesis</b> — with a ~30-day observable</li>
+        <li><b>Ledger-bound verdict</b> — not chosen by narrative strength</li>
+      </ul>
+    </div>
+    <div class="swap-box">
+      <h4>Swap — the variant surface</h4>
+      <ul>
+        <li><b>Trigger description</b> — the decision types that activate it</li>
+        <li><b>Role cast</b> — the five perspectives that matter here</li>
+        <li><b>"Primary evidence"</b> — this domain's version of "talked to a real buyer"</li>
+        <li><b>Gate stop-condition</b> — built around what the decision <i>hinges</i> on</li>
+        <li><b>Red-team lenses</b> — how this kind of decision actually fails</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="vgrid">
+    <div class="vcard">
+      <div class="vh"><span class="emoji">💰</span><h5>Pricing decision</h5></div>
+      <p><b>Recast:</b> Pricing Analyst · Customer Strategist · Finance · Operator · Historian.
+      <b>Primary evidence:</b> willingness-to-pay conversations; own churn data by segment.</p>
+      <div class="gate-line">Gate: hinges on elasticity + zero price conversations → stop.</div>
+    </div>
+    <div class="vcard">
+      <div class="vh"><span class="emoji">🧑‍💼</span><h5>Key hire / org change</h5></div>
+      <p><b>Recast:</b> Talent Analyst · Operator · Finance · Team Strategist · Historian.
+      <b>Primary evidence:</b> references you actually called; measured cost of the gap.</p>
+      <div class="gate-line">Gate: "we're drowning" with no measurement → stop, measure first.</div>
+    </div>
+    <div class="vcard">
+      <div class="vh"><span class="emoji">🌍</span><h5>Market entry</h5></div>
+      <p><b>Recast:</b> Market Analyst · Customer Strategist · Operator · Finance · Historian.
+      <b>Primary evidence:</b> buyers in the <i>target</i> market — home-market enthusiasm doesn't count.</p>
+      <div class="gate-line">Gate: zero target-market conversations → automatic stop.</div>
+    </div>
+    <div class="vcard">
+      <div class="vh"><span class="emoji">🤝</span><h5>Vendor selection</h5></div>
+      <p><b>Recast:</b> Technical Evaluator · Operator · Finance · Risk Analyst · Historian.
+      <b>Primary evidence:</b> a PoC on your own workload; reference calls at your scale.</p>
+      <div class="gate-line">Gate: no PoC and no reference calls → stop. A sales demo is secondary.</div>
+    </div>
+    <div class="vcard">
+      <div class="vh"><span class="emoji">🪦</span><h5>Kill / sunset decision</h5></div>
+      <p><b>Recast:</b> Customer Strategist · Finance · Operator · Market Analyst · Historian.
+      <b>Primary evidence:</b> per-account usage, exported; conversations with the heaviest users.</p>
+      <div class="gate-line">Gate: nobody has talked to the top users → stop.</div>
+    </div>
+    <div class="vcard" style="background:var(--wash);border-style:dashed;">
+      <div class="vh"><span class="emoji">✂️</span><h5>Your variant</h5></div>
+      <p>Copy the folder, rewrite the trigger, recast the roles, redefine primary evidence, re-aim
+      the red team, add domain verdict rules, update the worked example, repackage.</p>
+      <div class="gate-line" style="color:var(--teal);">Full guide: docs/creating-and-adapting-skills.md</div>
+    </div>
+  </div>
+
+  <div class="callout teal" style="margin-top:4mm;">
+    <b>The one rule that transfers everywhere:</b> every variant exists to answer the same question —
+    what is the short list of cheap, falsifiable tests that would actually change what you do? If an
+    adaptation starts optimising for a more persuasive memo instead of a better test list, it has
+    lost the plot.
+  </div>
+
+  <div class="footer"><span>Claude Skills · Decision Team Companion · github.com/thejustinjames/ClaudeSkills</span><span>06</span></div>
+</div>
+
+</body>
+</html>

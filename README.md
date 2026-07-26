@@ -78,6 +78,8 @@ A packaged, installable version is included as [`decision-team.skill`](decision-
 
 **📖 Read the full playbook:** [`skills/decision-team/README.md`](skills/decision-team/README.md) — the complete 10-step workflow, the evidence gate, role isolation, red-teaming rules, and how verdicts are constrained.
 
+**📄 Prefer a visual overview?** Download the [**Decision Team Companion PDF**](docs/decision-team-companion.pdf) — a 6-page illustrated guide with diagrams of the pipeline, the evidence gate, the isolation architecture, and the variant playbook.
+
 ---
 
 ## 🚀 Using a skill
