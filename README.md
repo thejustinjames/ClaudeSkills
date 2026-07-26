@@ -95,7 +95,9 @@ Then just talk naturally:
 
 ## ✂️ Honing a template to your own tasks
 
-These skills are deliberately general. To specialize one:
+These skills are deliberately general. **The full guide lives at [`docs/creating-and-adapting-skills.md`](docs/creating-and-adapting-skills.md)** — it covers building a skill from scratch (anatomy, trigger descriptions, references, scripts, packaging, testing) and adapting `decision-team` beyond build-vs-buy, with ready-made variant sketches for pricing, key hires, market entry, vendor selection, and kill/sunset decisions.
+
+The short version:
 
 1. **Fork the skill folder** and rename it (e.g. `vendor-selection`).
 2. **Rewrite the `description`** in `SKILL.md` frontmatter — that's what triggers the skill, so make it match *your* recurring task.
