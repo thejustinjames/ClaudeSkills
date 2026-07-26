@@ -13,6 +13,7 @@ Skills are packaged instructions, reference material, and helper scripts that Cl
 | Skill | What it does |
 |-------|--------------|
 | [`decision-team`](skills/decision-team/) | Multi-role strategy analysis for consequential decisions — build vs. buy, pricing, market entry, vendor selection, go/no-go. |
+| [`hiring-team`](skills/hiring-team/) | The hiring variant — evidence-gated, red-teamed hiring decisions that rank demonstrated work above claimed credentials and find candidates instead of filtering them. |
 
 ---
 
@@ -82,6 +83,19 @@ The skill ships in two forms so you can both **use it** and **see inside it**:
 **📖 Read the full playbook:** [`skills/decision-team/README.md`](skills/decision-team/README.md) — the complete 10-step workflow, the evidence gate, role isolation, red-teaming rules, and how verdicts are constrained.
 
 **📄 Prefer a visual overview?** Download the [**Decision Team Companion PDF**](docs/decision-team-companion.pdf) — a 6-page illustrated guide with diagrams of the pipeline, the evidence gate, the isolation architecture, and the variant playbook.
+
+---
+
+## 🧑‍💼 `hiring-team` — the first honed variant
+
+**Talent · Hiring decisions**
+
+Proof that the template hones: `hiring-team` applies the same harness to hiring calls — open a role, choose between finalists, decide on a candidate — built around the thesis of [*You Cannot Hire the Future Through a Filter Trained on the Past*](https://justinjames.co.uk/journal/hire-the-future/): the standard pipeline systematically rejects the non-standard excellent, and the false negative is the only cost nobody measures.
+
+The invariant core survives intact (evidence gate → isolated roles → red team → ledger-bound verdict). The hiring surface is new: an evidence hierarchy that puts **demonstrated work above claimed credentials**, a **gates-vs-proxies audit** (real hard gates stated first; years-of-experience demoted from knockout to signal), a **finding-over-filtering** sourcing rule, red-team lenses for **resemblance bias** and **false negatives**, verdicts of *hire / reshape / trial / keep-looking*, and a standing quarterly **rejected-pile audit**. Guardrails are hard-coded: no protected characteristics, no character verdicts, no invented psychometrics, never bulk screening.
+
+- 📦 [`hiring-team.skill`](hiring-team.skill) — packaged and installable
+- 🔍 [`skills/hiring-team/`](skills/hiring-team/) — unpacked, browsable
 
 ---
 

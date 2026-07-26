@@ -218,6 +218,10 @@ invariant core stays intact.
 
 #### 🧑‍💼 Key hire / org decision (hire an exec, build a team, reorg)
 
+> **This variant now exists:** see [`skills/hiring-team/`](../skills/hiring-team/) — built
+> with exactly the procedure above, plus a hiring-specific evidence hierarchy
+> (demonstrated work over claimed credentials) and a gates-vs-proxies audit.
+
 - **Roles:** Talent Analyst (market for the role, comp benchmarks) · Operator
   (what breaks without the hire; onboarding cost) · Finance Lead (fully-loaded
   cost vs. alternatives) · Culture/Team Strategist (team impact, reporting
