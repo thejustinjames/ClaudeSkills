@@ -74,7 +74,10 @@ skills/decision-team/
     └── rank_assumptions.py         # Rank assumptions by impact × uncertainty
 ```
 
-A packaged, installable version is included as [`decision-team.skill`](decision-team.skill).
+The skill ships in two forms so you can both **use it** and **see inside it**:
+
+- 📦 [`decision-team.skill`](decision-team.skill) — the packaged, installable version (a `.skill` file is just a zip of the skill folder).
+- 🔍 [`skills/decision-team/`](skills/decision-team/) — the same skill **unpacked**, so you can browse every file that makes it work: the `SKILL.md` playbook, the reference protocols, the workspace templates, and the lint/ranking scripts.
 
 **📖 Read the full playbook:** [`skills/decision-team/README.md`](skills/decision-team/README.md) — the complete 10-step workflow, the evidence gate, role isolation, red-teaming rules, and how verdicts are constrained.
 

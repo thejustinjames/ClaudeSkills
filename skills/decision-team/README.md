@@ -1,5 +1,12 @@
 # Decision Team
 
+> **📦 You are looking inside a Claude skill.** This folder is the unpacked contents of
+> [`decision-team.skill`](../../decision-team.skill) — a `.skill` file is just a zip of a folder
+> like this one. [`SKILL.md`](SKILL.md) is the canonical playbook Claude loads;
+> [`references/`](references/) holds step-specific depth, [`assets/`](assets/) holds templates and
+> a worked example, and [`scripts/`](scripts/) holds the deterministic checks. (This README is
+> added for browsing on GitHub and is not part of the package.)
+
 A harness for making a consequential decision well. Six analytical roles run in
 isolation, every claim is traced to evidence or flagged as an assumption, an
 independent red team tries to kill the recommendation, and the primary output is
